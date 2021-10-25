@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.88.1" />
+
+
+<title>Cleaning bad data - Kylee Sodomka&#39;s Project</title>
+<meta property="og:title" content="Cleaning bad data - Kylee Sodomka&#39;s Project">
+
+
+  <link href='/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/GitHub.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://twitter.com/KyleeSodomka">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">6 min read</span>
+    
+
+    <h1 class="article-title">Cleaning bad data</h1>
+
+    
+    <span class="article-date">2021-10-25</span>
+    
+
+    <div class="article-content">
+      
+<script src="/2021/10/25/cleaning-bad-data/index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>I am going to be cleaning up some text in a football file and create a scatterplot of it.The first step I need to do is include all the libraries I will be using.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
+## ✓ tibble  3.1.3     ✓ dplyr   1.0.7
+## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
+## ✓ readr   2.0.1     ✓ forcats 0.5.1</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(dplyr)
+library(ggalt)</code></pre>
+<pre><code>## Registered S3 methods overwritten by &#39;ggalt&#39;:
+##   method                  from   
+##   grid.draw.absoluteGrob  ggplot2
+##   grobHeight.absoluteGrob ggplot2
+##   grobWidth.absoluteGrob  ggplot2
+##   grobX.absoluteGrob      ggplot2
+##   grobY.absoluteGrob      ggplot2</code></pre>
+<p>Here is the data I will be using for this project.</p>
+<pre class="r"><code>badtext &lt;- read_csv(&quot;badfootballlogs19.csv&quot;)</code></pre>
+<pre><code>## Rows: 1662 Columns: 51</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (8): Date, HomeAway, Opponent, Result, TeamFull, TeamURL, Team, Conference
+## dbl (43): Game, PassingCmp, PassingAtt, PassingPct, PassingYds, PassingTD, R...</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<p>Now, for the fun part. My first step is going to be using the Result column and splitting it into an “Outcome” and “Score” column.</p>
+<pre class="r"><code>badtext %&gt;% separate(Result, into=c(&quot;Outcome&quot;, &quot;Score&quot;), sep=&quot;\\ &quot;) </code></pre>
+<pre><code>## # A tibble: 1,662 × 52
+##     Game Date     HomeAway Opponent Outcome Score PassingCmp PassingAtt PassingPct
+##    &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+##  1     1 8/24/19  N        Miami (… W       (24-…         17         27       63  
+##  2     2 9/7/19   &lt;NA&gt;     Tenness… W       (45-…         30         36       83.3
+##  3     3 9/14/19  @        Kentucky W       (29-…         21         30       70  
+##  4     4 9/21/19  &lt;NA&gt;     Tenness… W       (34-…         24         34       70.6
+##  5     5 9/28/19  &lt;NA&gt;     Towson   W       (38-…         24         28       85.7
+##  6     6 10/5/19  &lt;NA&gt;     Auburn   W       (24-…         25         39       64.1
+##  7     7 10/12/19 @        Louisia… L       (28-…         24         44       54.5
+##  8     8 10/19/19 @        South C… W       (38-…         21         33       63.6
+##  9     9 11/2/19  N        Georgia  L       (17-…         21         33       63.6
+## 10    10 11/9/19  &lt;NA&gt;     Vanderb… W       (56-…         27         40       67.5
+## # … with 1,652 more rows, and 43 more variables: PassingYds &lt;dbl&gt;,
+## #   PassingTD &lt;dbl&gt;, RushingAtt &lt;dbl&gt;, RushingYds &lt;dbl&gt;, RushingAvg &lt;dbl&gt;,
+## #   RushingTD &lt;dbl&gt;, OffensivePlays &lt;dbl&gt;, OffensiveYards &lt;dbl&gt;,
+## #   OffenseAvg &lt;dbl&gt;, FirstDownPass &lt;dbl&gt;, FirstDownRush &lt;dbl&gt;,
+## #   FirstDownPen &lt;dbl&gt;, FirstDownTotal &lt;dbl&gt;, Penalties &lt;dbl&gt;,
+## #   PenaltyYds &lt;dbl&gt;, Fumbles &lt;dbl&gt;, Interceptions &lt;dbl&gt;, TotalTurnovers &lt;dbl&gt;,
+## #   TeamFull &lt;chr&gt;, TeamURL &lt;chr&gt;, DefPassingCmp &lt;dbl&gt;, DefPassingAtt &lt;dbl&gt;, …</code></pre>
+<p>My next step will be using the gsub function to get rid of the parentheses in the score. I will mutate the Score column twice to get ride of ( and then ).</p>
+<pre class="r"><code>badtext %&gt;% separate(Result, into=c(&quot;Outcome&quot;, &quot;Score&quot;), sep=&quot;\\ &quot;) %&gt;%
+     mutate(Score = gsub(&quot;\\(&quot;, &quot;&quot;, Score)) %&gt;%
+   mutate(Score = gsub(&quot;)&quot;, &quot;&quot;, Score))</code></pre>
+<pre><code>## # A tibble: 1,662 × 52
+##     Game Date     HomeAway Opponent Outcome Score PassingCmp PassingAtt PassingPct
+##    &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+##  1     1 8/24/19  N        Miami (… W       24-20         17         27       63  
+##  2     2 9/7/19   &lt;NA&gt;     Tenness… W       45-0          30         36       83.3
+##  3     3 9/14/19  @        Kentucky W       29-21         21         30       70  
+##  4     4 9/21/19  &lt;NA&gt;     Tenness… W       34-3          24         34       70.6
+##  5     5 9/28/19  &lt;NA&gt;     Towson   W       38-0          24         28       85.7
+##  6     6 10/5/19  &lt;NA&gt;     Auburn   W       24-13         25         39       64.1
+##  7     7 10/12/19 @        Louisia… L       28-42         24         44       54.5
+##  8     8 10/19/19 @        South C… W       38-27         21         33       63.6
+##  9     9 11/2/19  N        Georgia  L       17-24         21         33       63.6
+## 10    10 11/9/19  &lt;NA&gt;     Vanderb… W       56-0          27         40       67.5
+## # … with 1,652 more rows, and 43 more variables: PassingYds &lt;dbl&gt;,
+## #   PassingTD &lt;dbl&gt;, RushingAtt &lt;dbl&gt;, RushingYds &lt;dbl&gt;, RushingAvg &lt;dbl&gt;,
+## #   RushingTD &lt;dbl&gt;, OffensivePlays &lt;dbl&gt;, OffensiveYards &lt;dbl&gt;,
+## #   OffenseAvg &lt;dbl&gt;, FirstDownPass &lt;dbl&gt;, FirstDownRush &lt;dbl&gt;,
+## #   FirstDownPen &lt;dbl&gt;, FirstDownTotal &lt;dbl&gt;, Penalties &lt;dbl&gt;,
+## #   PenaltyYds &lt;dbl&gt;, Fumbles &lt;dbl&gt;, Interceptions &lt;dbl&gt;, TotalTurnovers &lt;dbl&gt;,
+## #   TeamFull &lt;chr&gt;, TeamURL &lt;chr&gt;, DefPassingCmp &lt;dbl&gt;, DefPassingAtt &lt;dbl&gt;, …</code></pre>
+<p>I am going to separate the Score column now to “TeamScore” and “OpponentScore”. I will also get rid of the dash by using \ and then the dash right after it. I am going to create a new dataframe called “bettertext” to save what I have done.</p>
+<pre class="r"><code>badtext %&gt;% separate(Result, into=c(&quot;Outcome&quot;, &quot;Score&quot;), sep=&quot;\\ &quot;) %&gt;%
+     mutate(Score = gsub(&quot;\\(&quot;, &quot;&quot;, Score)) %&gt;%
+   mutate(Score = gsub(&quot;)&quot;, &quot;&quot;, Score)) %&gt;%
+  separate(Score, into=c(&quot;TeamScore&quot;, &quot;OpponentScore&quot;), sep=&quot;\\-&quot;) %&gt;%
+    mutate(TeamScore = as.numeric(TeamScore), OpponentScore = as.numeric(OpponentScore)) -&gt; bettertext</code></pre>
+<p>I made the text better and made it into a new dataframe. Now, I can move onto the next step: putting it in a scatterplot. I am going to create a new field called “differential” where I will take TeamScore - OpponentScore. Then, I will filter the differential so that it is greater than 65 points. After that, I will take this code and make it into a new dataframe called “worstgames”.</p>
+<pre class="r"><code>bettertext %&gt;%
+  mutate(
+    differential = TeamScore - OpponentScore) %&gt;%
+filter (differential &gt; 65) -&gt; worstgames</code></pre>
+<p>I am going to create a scatterplot with the bettertext data. I will put the TeamScore on the x axis and the OpponentScore on the y axis. I will make the color of these games gray to make it easier to see the worst games when I add color to them next.</p>
+<pre class="r"><code>ggplot() +
+  geom_point(data=bettertext, aes(x=TeamScore, y=OpponentScore), color=&quot;gray&quot;)</code></pre>
+<p><img src="/2021/10/25/cleaning-bad-data/index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>I am going to copy the previous code and add onto it. Everything will be the same, but I’ll be using the data from worstgames and make them red to be able to see easier.</p>
+<pre class="r"><code>ggplot() +
+  geom_point(data=bettertext, aes(x=TeamScore, y=OpponentScore), color=&quot;gray&quot;) +
+  geom_point(data=worstgames, aes(x=TeamScore, y=OpponentScore), color=&quot;red&quot;)</code></pre>
+<p><img src="/2021/10/25/cleaning-bad-data/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>If that wasn’t easy enough to find, I am also going to circle the worst games with a blue line. I will use the geom_encircle function (why I installed ggalt earlier) and put all of the same information that I used when I added worstgames onto the scatterplot. I am making the s_shape 0 then expand to 0.02 to make it that far away from the dots.</p>
+<pre class="r"><code>ggplot() +
+  geom_point(data=bettertext, aes(x=TeamScore, y=OpponentScore), color=&quot;gray&quot;) +
+  geom_point(data=worstgames, aes(x=TeamScore, y=OpponentScore), color=&quot;red&quot;) +
+    geom_encircle(data=worstgames, aes(x=TeamScore, y=OpponentScore), s_shape=0, expand=0.02, colour=&quot;blue&quot;)</code></pre>
+<p><img src="/2021/10/25/cleaning-bad-data/index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>It’s time to label this graph. I will add a title, subtitle and caption to give the reader more information about what they are seeing on the scatterplot.</p>
+<pre class="r"><code>ggplot() +
+  geom_point(data=bettertext, aes(x=TeamScore, y=OpponentScore), color=&quot;gray&quot;) +
+  geom_point(data=worstgames, aes(x=TeamScore, y=OpponentScore), color=&quot;red&quot;) +
+    geom_encircle(data=worstgames, aes(x=TeamScore, y=OpponentScore), s_shape=0, expand=0.02, colour=&quot;blue&quot;) +
+  labs(
+    title=&quot;Worst Games in College Football by Score Differential&quot;, subtitle=&quot;5 home teams won with over 70 points while the opposing team&#39; scored single digits&#39;s score was only single digits.&quot;,
+    caption=&quot;Source: Matt Waite | By Kylee Sodomka&quot;
+  )</code></pre>
+<p><img src="/2021/10/25/cleaning-bad-data/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>I’m going to add theme_minimal() just to make the graph look nicer and more organized.</p>
+<pre class="r"><code>ggplot() +
+  geom_point(data=bettertext, aes(x=TeamScore, y=OpponentScore), color=&quot;gray&quot;) +
+  geom_point(data=worstgames, aes(x=TeamScore, y=OpponentScore), color=&quot;red&quot;) +
+    geom_encircle(data=worstgames, aes(x=TeamScore, y=OpponentScore), s_shape=0, expand=0.02, colour=&quot;blue&quot;) +
+  labs(
+    title=&quot;Worst Games in College Football by Score Differential&quot;, subtitle=&quot;5 home teams won with over 70 points while the opposing team&#39; scored single digits&#39;s score was only single digits.&quot;,
+    caption=&quot;Source: Matt Waite | By Kylee Sodomka&quot;
+  ) + theme_minimal()</code></pre>
+<p><img src="/2021/10/25/cleaning-bad-data/index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+
