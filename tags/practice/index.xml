@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>practice on Kylee Sodomka&#39;s Project</title>
+    <link>/tags/practice/</link>
+    <description>Recent content in practice on Kylee Sodomka&#39;s Project</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 24 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="/tags/practice/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Cleaning up bad text in data</title>
+      <link>/2021/10/24/cleaning-up-bad-text-in-data/</link>
+      <pubDate>Sun, 24 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/2021/10/24/cleaning-up-bad-text-in-data/</guid>
+      <description>  </description>
+    </item>
+    
+  </channel>
+</rss>
