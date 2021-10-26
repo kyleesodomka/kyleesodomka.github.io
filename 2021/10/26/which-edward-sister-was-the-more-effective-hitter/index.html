@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.88.1" />
+
+
+<title>Which Edward sister was the more effective hitter? - Kylee Sodomka&#39;s Project</title>
+<meta property="og:title" content="Which Edward sister was the more effective hitter? - Kylee Sodomka&#39;s Project">
+
+
+  <link href='/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/GitHub.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://twitter.com/KyleeSodomka">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">8 min read</span>
+    
+
+    <h1 class="article-title">Which Edward sister was the more effective hitter?</h1>
+
+    
+    <span class="article-date">2021-10-26</span>
+    
+
+    <div class="article-content">
+      
+<script src="/2021/10/26/which-edward-sister-was-the-more-effective-hitter/index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>Taylor Edwards and Tristen Edwards. Two sisters who have both played softball at Nebraska and left their names in the record books. Both have proven their power with their bats. However, I wanted to see which sister made more of an impact with their hits and who was the more effective player.</p>
+<p>Let’s start off with answering the most basic question: who did better career-wise? The first thing I need to do is add the libraries I’m going to use.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
+## ✓ tibble  3.1.3     ✓ dplyr   1.0.7
+## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
+## ✓ readr   2.0.1     ✓ forcats 0.5.1</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(dplyr)
+library(cowplot)
+library(ggrepel)</code></pre>
+<p>Here is the data I’m going to use:</p>
+<pre class="r"><code>softball &lt;- read_csv(&quot;~/Desktop/SPMC 350/Stats for project! - new.csv&quot;)</code></pre>
+<pre><code>## Rows: 9 Columns: 56</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (3): Player, Overall Record, Conference Record
+## dbl (53): Season, Overall Hits, Overall Doubles, Overall Triples, Overall Ho...</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<p>After getting the data and libraries set up, I’m going to find Taylor’s and Tristen’s total hits by using the summarize function and using sum to find it. I’ll save this information to a new dataframe called “overallhits”.</p>
+<pre class="r"><code>softball %&gt;%
+  group_by(Player) %&gt;%
+  summarize(
+    Hits = sum(`Overall Hits`)
+  ) -&gt; overallhits</code></pre>
+<p>I’m going to do the same thing, but with overall RBIs now. This new dataframe will be called “rbis”.</p>
+<pre class="r"><code>softball %&gt;%
+  group_by(Player) %&gt;%
+  summarize(
+    RBIs = sum(`Overall RBIs`)
+  ) -&gt; rbis</code></pre>
+<p>Taylor Edwards led in both categories. I’m going to filter to just her stats and summarize her overall hits and RBIs. I should be able only see her name and her two totals. This information will be saved to a new dataframe called “tay”.</p>
+<pre class="r"><code>softball %&gt;%
+  filter(Player == &quot;Taylor&quot;) %&gt;%
+  group_by(Player) %&gt;%
+  select(Season, `Overall RBIs`, `Overall Hits`) %&gt;%
+  summarize(
+    taylorrbis = sum(`Overall RBIs`),
+    taylorhits =sum(`Overall Hits`)
+  ) -&gt; tay</code></pre>
+<pre><code>## Adding missing grouping variables: `Player`</code></pre>
+<p>Now, it’s time to create some bar graphs. The first one I’m going to create is the over “Overall Hits”. I am going to use the data from overallhits, put the player on the x axis and the weight as Hits. I’m going to do the exact same thing, but use tay as the data. I’m doing this so I can highlight her information in a scarlet color to show that she leads in hits. I’m going to create half a title and subtitle because it will become a cowplot later. If I put the full title and subtitle, it’ll get cut off. I am going label the x axis as “Player” and y axis as “Number of Hits”. I will use theme_minimal() to make my bar graph look cleaner. I will also use the theme function to make the text a different size and the title bold. I will use coord_flip() to flip my data horizontally. I’m going to add annotations to show the specific number of hits Taylor and Tristen had.</p>
+<pre class="r"><code>ggplot() +
+  geom_bar(data=overallhits, aes(x=Player, weight=Hits)) + geom_bar(data=tay, aes(x=Player, weight=taylorhits), fill=&quot;#E41C38&quot;) +
+  labs(
+    title=&quot;Looking at the basics...&quot;,
+    subtitle=&quot;Just looking at career hits and RBIs...&quot;,
+    caption=&quot; &quot;,
+    x=&quot;Player&quot;,
+    y=&quot;Number of Hits&quot;
+  ) + 
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10),
+    axis.text = element_text(size = 7),
+    axis.ticks = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  ) +
+  coord_flip() +
+      geom_text(aes(x=2.5, y=189), label=&quot;213 Hits&quot;) +
+    geom_text(aes(x=1.5, y=196), label=&quot;220 Hits&quot;) </code></pre>
+<p><img src="/2021/10/26/which-edward-sister-was-the-more-effective-hitter/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>I am going to make this graph a new dataframe called bghits.</p>
+<pre class="r"><code>ggplot() +
+  geom_bar(data=overallhits, aes(x=Player, weight=Hits)) + geom_bar(data=tay, aes(x=Player, weight=taylorhits), fill=&quot;#E41C38&quot;) +
+  labs(
+    title=&quot;Looking at the basics...&quot;,
+    subtitle=&quot;Just looking at career hits and RBIs...&quot;,
+    caption=&quot; &quot;,
+    x=&quot;Player&quot;,
+    y=&quot;Number of Hits&quot;
+  ) + 
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10),
+    axis.text = element_text(size = 7),
+    axis.ticks = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  ) +
+  coord_flip() +
+      geom_text(aes(x=2.5, y=189), label=&quot;213 Hits&quot;) +
+    geom_text(aes(x=1.5, y=196), label=&quot;220 Hits&quot;) -&gt; bghits</code></pre>
+<p>Now, I’m going to do the exact same thing, but with overall RBIs. I will be adding the rest of the title and subtitle. I am also adding a caption to this graph so it will appear on the bottom right side after I make this into a cowplot.</p>
+<pre class="r"><code>ggplot() +
+  geom_bar(data=rbis, aes(x=Player, weight=RBIs)) + geom_bar(data=tay, aes(x=Player, weight=taylorrbis), fill=&quot;#E41C38&quot;) +
+  labs(
+    title=&quot;...Taylor was the better hitter&quot;,
+    subtitle=&quot;...the older sister dominated both.&quot;,
+    caption=&quot;Source: Huskers.com | By Kylee Sodomka&quot;, 
+    x=&quot; &quot;,
+    y=&quot;Total RBIs&quot;
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10),
+    axis.text = element_text(size = 7),
+    axis.ticks = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  ) +
+  coord_flip() +
+    geom_text(aes(x=2.5, y=133), label=&quot;157 RBIs&quot;) +
+    geom_text(aes(x=1.5, y=178), label=&quot;202 RBIs&quot;)</code></pre>
+<p><img src="/2021/10/26/which-edward-sister-was-the-more-effective-hitter/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>This graph will be under the new dataframe “bgrbis”.</p>
+<pre class="r"><code>ggplot() +
+  geom_bar(data=rbis, aes(x=Player, weight=RBIs)) + geom_bar(data=tay, aes(x=Player, weight=taylorrbis), fill=&quot;#E41C38&quot;) +
+  labs(
+    title=&quot;...Taylor was the better hitter&quot;,
+    subtitle=&quot;...the older sister dominated both.&quot;,
+    caption=&quot;Source: Huskers.com | By Kylee Sodomka&quot;, 
+    x=&quot; &quot;,
+    y=&quot;Total RBIs&quot;
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10),
+    axis.text = element_text(size = 7),
+    axis.ticks = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  ) +
+  coord_flip() +
+    geom_text(aes(x=2.5, y=133), label=&quot;157 RBIs&quot;) +
+    geom_text(aes(x=1.5, y=178), label=&quot;202 RBIs&quot;) -&gt; bgrbis</code></pre>
+<p>Finally, I will make a cowplot. I will use the plot_grid function and use bghits and bgrbis as my data. It will show how Taylor and Tristen compare side-by-side.</p>
+<pre class="r"><code>plot_grid(bghits, bgrbis)</code></pre>
+<p><img src="/2021/10/26/which-edward-sister-was-the-more-effective-hitter/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>If we were only looking at who was the best when it came to hits and RBIs career-wise, Taylor would have it in the bag. However, I want to find who was more EFFECTIVE. When we talked about circle graphs in class, we discussed that November basketball mattered because those games should be easy wins. Conference games, though, mattered more when it came to the quality of wins. Does this apply for softball? Absolutely. Let’s look at how the sisters’ hitting stats in conference play using stacked bar charts.</p>
+<p>I’m going to group_by Player again. I’m going to select Season and everything under the Conference category (hits, doubles, triples, home runs, RBIs). I’ll use summarize and make 5 new categories that will be the sum of each Conference column. For example, there’ll be a “hits” column that will be the sum of Conference Hits. So on, and so forth. I’ll make this as a new dataframe and call it conference.</p>
+<pre class="r"><code>softball %&gt;%
+  group_by(Player) %&gt;%
+  select(Season, `Conference Hits`, `Conference Doubles`, `Conference Triples`, `Conference Home Runs`, `Conference RBIs`) %&gt;%
+  summarize(
+    hits = sum(`Conference Hits`),
+    doubles = sum(`Conference Doubles`),
+    triples = sum(`Conference Triples`),
+    homeruns = sum(`Conference Home Runs`),
+    rbis = sum(`Conference RBIs`)) -&gt; conference</code></pre>
+<pre><code>## Adding missing grouping variables: `Player`</code></pre>
+<p>I need to make this data longer to make a stacked bar chart. I am going to use the pivot_longer function and split my new categories into two (by player). Instead of seeing the five categories, I should see ten. This will be a new dataframe called “clong”.</p>
+<pre class="r"><code>conference %&gt;%
+  pivot_longer(cols=c(hits, doubles, triples, homeruns, rbis), names_to=&quot;Type&quot;, values_to=&quot;Number&quot;) -&gt; clong</code></pre>
+<p>Time to make a stacked bar chart. I will use ggplot() and geom_bar like I did before. The data will be from clong, Player will be on the x axis, and Number will be the Weight. I’m going to add the labels, theme_minimal and coord_flip the data.</p>
+<pre class="r"><code>ggplot() + geom_bar(data=clong, aes(x=Player, weight=Number, fill=Type)) + 
+  labs(
+    title=&quot;How the tables have turned for Tristen&quot;,
+    subtitle=&quot;The only thing Taylor is beating her sister in is home runs (by 1).&quot;,
+    caption=&quot;Source: Huskers.com | By Kylee Sodomka&quot;, 
+    x=&quot;Player&quot;,
+    y=&quot;Total&quot;
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10),
+    axis.text = element_text(size = 7),
+    axis.ticks = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  ) + coord_flip()</code></pre>
+<p><img src="/2021/10/26/which-edward-sister-was-the-more-effective-hitter/index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Woah. Tristen all of a sudden stands out compared to her sister. There is a problem with this data though. The younger Edwards had a season where she only played teams in her conference. That will definitely add up the number of hits and RBIs. Her total number of conference games is 112 compared to Taylor’s 86. Yikes. To make matters a little more fair to the older one of the two, let’s add their postseason games. Instead of 112 games to 86, it would be 115 to 108. Only a seven game difference. Not too shabby.</p>
+<p>I’m going to repeat all of the steps I just did to make a stacked bar chart with postseason stats. I’m going to use the same code as before when I made the conference dataframe. I need to add everything postseason-wise to select and add those results to the sum of the conference stats. I’ll make this its own dataframe called “addpostseason”.</p>
+<pre class="r"><code>softball %&gt;%
+  group_by(Player) %&gt;%
+  select(Season, `Conference Hits`, `Conference Doubles`, `Conference Triples`, `Conference Home Runs`, `Conference RBIs`, `Postseason Hits`, `Postseason Doubles`, `Postseason Triples`, `Postseason Home Runs`, `Postseason RBIs`) %&gt;%
+  summarize(
+    hits = sum(`Conference Hits` + `Postseason Hits`),
+    doubles = sum(`Conference Doubles` + `Postseason Doubles`),
+    triples = sum(`Conference Triples` + `Postseason Triples`),
+    homeruns = sum(`Conference Home Runs` + `Postseason Home Runs`),
+    rbis = sum(`Conference RBIs` + `Postseason RBIs`)) -&gt; addpostseason</code></pre>
+<pre><code>## Adding missing grouping variables: `Player`</code></pre>
+<p>I have to make this data long too. I’ll make this dataframe called “plong”.</p>
+<pre class="r"><code>addpostseason %&gt;%
+  pivot_longer(cols=c(hits, doubles, triples, homeruns, rbis), names_to=&quot;Type&quot;, values_to=&quot;Number&quot;) -&gt; plong</code></pre>
+<p>I’m literally going to do the exact same thing as before. The only things I’m changing are where the data is coming from, the title and the subtitle.</p>
+<pre class="r"><code>ggplot() + geom_bar(data=plong, aes(x=Player, weight=Number, fill=Type)) + labs(
+    title=&quot;Even with postseason stats, Tristen is still out on top&quot;,
+    subtitle=&quot;Taylor does beat her sister in two categories: home runs and RBIs (by 3).&quot;,
+    caption=&quot;Source: Huskers.com | By Kylee Sodomka&quot;, 
+    x=&quot;Player&quot;,
+    y=&quot;Total&quot;
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10),
+    axis.text = element_text(size = 7),
+    axis.ticks = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  ) + coord_flip()</code></pre>
+<p><img src="/2021/10/26/which-edward-sister-was-the-more-effective-hitter/index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+

@@ -6,7 +6,17 @@
     <description>Recent content on Kylee Sodomka&#39;s Project</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 25 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 26 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Which Edward sister was the more effective hitter?</title>
+      <link>/2021/10/26/which-edward-sister-was-the-more-effective-hitter/</link>
+      <pubDate>Tue, 26 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/2021/10/26/which-edward-sister-was-the-more-effective-hitter/</guid>
+      <description>Taylor Edwards and Tristen Edwards. Two sisters who have both played softball at Nebraska and left their names in the record books. Both have proven their power with their bats. However, I wanted to see which sister made more of an impact with their hits and who was the more effective player.
+Let’s start off with answering the most basic question: who did better career-wise? The first thing I need to do is add the libraries I’m going to use.</description>
+    </item>
+    
     <item>
       <title>Cleaning bad data</title>
       <link>/2021/10/25/cleaning-bad-data/</link>
@@ -15,16 +25,6 @@
       <guid>/2021/10/25/cleaning-bad-data/</guid>
       <description>I am going to be cleaning up some text in a football file and create a scatterplot of it.The first step I need to do is include all the libraries I will be using.
 library(tidyverse) ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ── ## ✓ ggplot2 3.3.5 ✓ purrr 0.3.4 ## ✓ tibble 3.1.3 ✓ dplyr 1.0.7 ## ✓ tidyr 1.1.3 ✓ stringr 1.4.0 ## ✓ readr 2.0.1 ✓ forcats 0.</description>
-    </item>
-    
-    <item>
-      <title>Which Edwards sister was the more effective hitter?</title>
-      <link>/2021/10/25/which-edwards-sister-was-the-more-effective-hitter/</link>
-      <pubDate>Mon, 25 Oct 2021 00:00:00 +0000</pubDate>
-      
-      <guid>/2021/10/25/which-edwards-sister-was-the-more-effective-hitter/</guid>
-      <description>Taylor Edwards and Tristen Edwards. Two sisters who have both played softball at Nebraska and left their names in the record books. Both have proven their power with their bats. However, I wanted to see which sister made more of an impact with their hits and who was the more effective player.
-Let’s start off with answering the most basic question: who did better career-wise? The first thing I need to do is add the libraries I’m going to use.</description>
     </item>
     
     <item>
