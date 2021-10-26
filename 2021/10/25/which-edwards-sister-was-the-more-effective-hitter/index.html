@@ -213,6 +213,20 @@ library(ggrepel)</code></pre>
 <p>Finally, I will make a cowplot. I will use the plot_grid function and use bghits and bgrbis as my data. It will show how Taylor and Tristen compare side-by-side.</p>
 <pre class="r"><code>plot_grid(bghits, bgrbis)</code></pre>
 <p><img src="/2021/10/25/which-edwards-sister-was-the-more-effective-hitter/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code>softball %&gt;%
+  group_by(Player) %&gt;%
+  select(Season, `Conference Hits`, `Conference Doubles`, `Conference Triples`, `Conference Home Runs`, `Conference RBIs`) %&gt;%
+  summarize(
+    hits = sum(`Conference Hits`),
+    doubles = sum(`Conference Doubles`),
+    triples = sum(`Conference Triples`),
+    homeruns = sum(`Conference Home Runs`),
+    rbis = sum(`Conference RBIs`)) -&gt; conference</code></pre>
+<pre><code>## Adding missing grouping variables: `Player`</code></pre>
+<pre class="r"><code>conference %&gt;%
+  pivot_longer(cols=c(hits, doubles, triples, homeruns, rbis), names_to=&quot;Type&quot;, values_to=&quot;Number&quot;) -&gt; clong</code></pre>
+<pre class="r"><code>ggplot() + geom_bar(data=clong, aes(x=Player, weight=Number, fill=Type)) + coord_flip()</code></pre>
+<p><img src="/2021/10/25/which-edwards-sister-was-the-more-effective-hitter/index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 
     </div>
   </article>
