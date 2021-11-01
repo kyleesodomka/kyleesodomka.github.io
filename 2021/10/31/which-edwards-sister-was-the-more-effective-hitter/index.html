@@ -136,7 +136,7 @@ huskerplayers &lt;- read_csv(&quot;~/Desktop/SPMC 350/huskersoftball.csv&quot;)<
   labs(
     title=&quot;...Taylor was the better hitter&quot;,
     subtitle=&quot;...the older sister dominated both.&quot;,
-    caption=&quot;Source: Huskers.com | By Kylee Sodomka&quot;, 
+    caption=&quot;Source: Huskers.com | Graphic by Kylee Sodomka&quot;, 
     x=&quot; &quot;,
     y=&quot;Total RBIs&quot;
   ) +
@@ -159,7 +159,8 @@ huskerplayers &lt;- read_csv(&quot;~/Desktop/SPMC 350/huskersoftball.csv&quot;)<
 <p>To compare their productivity, I’m going to use a stacked bar chart. We know their total RBIs, but how did they get them? I’ll create a dataframe that only contains the total number of RBIs based on a specific hit. This new set will be called typeofrbis.</p>
 <pre class="r"><code>softball %&gt;%
   group_by(Player) %&gt;%
-  select(Season, `RBIs off HRs`, `RBIs off 3Bs`, `RBIs off 2Bs`, `RBIs off 1Bs`, `RBIs elsewhere`) %&gt;%
+  select(Season, `RBIs off HRs`, `RBIs off 3Bs`, 
+         `RBIs off 2Bs`, `RBIs off 1Bs`, `RBIs elsewhere`) %&gt;%
   summarize(
     homeruns = sum(`RBIs off HRs`),
     triples = sum(`RBIs off 3Bs`),
@@ -169,14 +170,15 @@ huskerplayers &lt;- read_csv(&quot;~/Desktop/SPMC 350/huskersoftball.csv&quot;)<
 <pre><code>## Adding missing grouping variables: `Player`</code></pre>
 <p>I need to make this data longer to make a stacked bar chart. The new dataset that has long data will be called rbilong.</p>
 <pre class="r"><code>typeofrbis %&gt;%
-  pivot_longer(cols=c(homeruns, triples, doubles, singles, other), names_to=&quot;Type&quot;, values_to=&quot;Number&quot;) -&gt; rbilong</code></pre>
+  pivot_longer(cols=c(homeruns, triples, doubles, singles, other), 
+               names_to=&quot;Type&quot;, values_to=&quot;Number&quot;) -&gt; rbilong</code></pre>
 <p>The second question we’ll ask and answer is who’s hits were more productive? Here’s the number of RBIs per kind of hit.</p>
 <pre class="r"><code>ggplot() + 
   geom_bar(data=rbilong, aes(x=Player, weight=Number, fill=Type)) + 
   labs(
     title=&quot;Once again, Taylor beat Tristen with hits that led to RBIs&quot;,
     subtitle=&quot;The younger sister&#39;s hits produced a lot of runs for her team, but the older Edwards had more.&quot;,
-    caption=&quot;Source: Huskers.com | By Kylee Sodomka&quot;, 
+    caption=&quot;Source: Huskers.com | Graphic by Kylee Sodomka&quot;, 
     x=&quot;Player&quot;,
     y=&quot;Total&quot;
   ) +
