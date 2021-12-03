@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.88.1" />
+
+
+<title>Did the Trade Deadline doom the Chicago Cubs? - Kylee Sodomka&#39;s Project</title>
+<meta property="og:title" content="Did the Trade Deadline doom the Chicago Cubs? - Kylee Sodomka&#39;s Project">
+
+
+  <link href='/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/GitHub.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://twitter.com/KyleeSodomka">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">7 min read</span>
+    
+
+    <h1 class="article-title">Did the Trade Deadline doom the Chicago Cubs?</h1>
+
+    
+    <span class="article-date">2021-12-03</span>
+    
+
+    <div class="article-content">
+      
+<script src="/2021/12/03/did-the-trade-deadline-doom-the-chicago-cubs/index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>The 2021 Trade Deadline was deadly to Chicago Cubs fans. They did not trade one player, but the core of the team: Anthony Rizzo, Kris Bryant, and Javier Baez. Without them, I believed that there was no way this team could be as good as they once were. So, I decided to see if the Cubs were finished.</p>
+<p>The first thing I wanted to see was how the team looked rankings-wise before the trade deadline and after.</p>
+<pre class="r"><code>library(tidyverse)
+library(ggbump)
+library(cowplot)
+library(ggrepel)
+set.seed(1234)</code></pre>
+<pre class="r"><code>playerdata &lt;- read_csv(&quot;~/Desktop/SPMC 350/chicago player stats.csv&quot;, col_types=cols())</code></pre>
+<pre class="r"><code>rankings &lt;- read_csv(&quot;~/Desktop/SPMC 350/all team rankings.csv&quot;, col_types=cols())</code></pre>
+<p>I am going to take the rankings data and filter down to the five teams in the National League Central division. I am also going to create a dataframe with only the Cubs rankings that will be used in the graphic.</p>
+<pre class="r"><code>nlcentral &lt;- rankings %&gt;% 
+  filter(Team == &quot;Chicago Cubs&quot; | 
+           Team == &quot;Milwaukee Brewers&quot; | 
+           Team == &quot;Cincinnati Reds&quot; | 
+           Team == &quot;St. Louis Cardinals&quot; | 
+           Team == &quot;Pittsburgh Pirates&quot;)
+
+cubs &lt;- nlcentral %&gt;% 
+  filter(Team == &quot;Chicago Cubs&quot;)</code></pre>
+<p>I am going to create a bump chart that will show the rankings of the NL Central teams each week in the 2021 season. There will be a vertical line that is labeled, “After Trade Deadline” to show where in the season the core was not on the team anymore.</p>
+<pre class="r"><code>ggplot() + 
+  geom_bump(data=nlcentral, aes(x=Week, y=Rankings, color=Team)) + 
+  geom_point(data=cubs, aes(x=Week, y=Rankings, color=Team), size = 4) +
+  scale_color_manual(values = c(&quot;#0E3386&quot;, &quot;#C6011F&quot;, &quot;#0A2351&quot;, &quot;#27251F&quot;, &quot;#FEDB00&quot;)) +
+  geom_vline(xintercept = 19) +
+  geom_text(aes(x=14.8, y=1, label=&quot;After Trade Deadline&quot;)) +
+  scale_y_reverse() + 
+  labs(
+    title=&quot;Cubs started off okay, but didn&#39;t finish well&quot;,
+    subtitle=&quot;It was up and down before the trade deadline. They were going for anything but last place by the end.&quot;,
+    caption=&quot;Source: MLB.com | Graphic by Kylee Sodomka&quot;, 
+    x=&quot;Week&quot;,
+    y=&quot;Rankings&quot;
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size =8),
+    axis.text = element_text(size = 7),
+    axis.ticks = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  )</code></pre>
+<p><img src="/2021/12/03/did-the-trade-deadline-doom-the-chicago-cubs/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Yikes. Now, the Cubs were in a slump when they traded away some of their best players, so it would have been a miracle for the them to crawl out of that. However, they were doing everything they could to not end in last place.</p>
+<p>What Rizzo, Bryant and Baez were known for was their batting. They dominated when they were at the plate. Getting rid of three good bats was going to show in the results. Or would they?</p>
+<p>I am going to compare the “OG” core to a group of three players I believe could be the “New” core: Willson Contreras, Patrick Wisdom and Frank Schwindel. I will use the player data and summarize it to just the players, number of at-bats, games and hits.</p>
+<pre class="r"><code>playerdata %&gt;%
+  group_by(Player) %&gt;%
+  summarize(
+    abs = sum(AB),
+    games = sum(G), 
+    hits = sum(H)
+  ) %&gt;% na.omit() -&gt; cubsplayers</code></pre>
+<p>I will use the dataframe I just created and make two more out of it focusing on the original players and the potential new players. I am going to make Patrick Wisdom his own dataframe for labeling purposes with the graphic.</p>
+<pre class="r"><code>ogcore &lt;- cubsplayers %&gt;%
+  filter(Player == &quot;Anthony Rizzo&quot; |
+           Player == &quot;Kris Bryant&quot; |
+           Player == &quot;Javier Baez&quot;)
+
+newcore &lt;- cubsplayers %&gt;%
+  filter(Player == &quot;Willson Contreras&quot; |
+           Player == &quot;Frank Schwindel&quot;)
+
+patrickwisdom &lt;- cubsplayers %&gt;%
+  filter(Player == &quot;Patrick Wisdom&quot;)</code></pre>
+<p>I am going to create a scatterplot comparing the Cubs players on how many hits they had in the number of games they played (as a Cub). The OG core will be Cubbie blue, while the New core will be red. We will be able to see how these six players compare with each other and the other teammates.</p>
+<pre class="r"><code>ggplot() + 
+  geom_point(data=cubsplayers, aes(x=games, y=hits), color=&quot;grey&quot;) +
+  geom_point(data=ogcore, aes(x=games, y=hits), color=&quot;#0E3386&quot;) +
+  geom_point(data=newcore, aes(x=games, y=hits), color=&quot;#CC3433&quot;) +
+  geom_point(data=patrickwisdom, aes(x=games, y=hits), color=&quot;#CC3433&quot;) +
+  geom_text_repel(data=ogcore, aes(x=games, y=hits, label=Player)) +
+  geom_text_repel(data=newcore, aes(x=games, y=hits, label=Player)) +
+  geom_text(aes(x=118, y=78, label=&quot;Patrick Wisdom&quot;)) +
+  labs(
+    title=&quot;The New core&#39;s number of hits are similar to the OG&#39;s&quot;,
+    subtitle=&quot;Technically, the original core did better in fewer games, but Schwindel looks promising.&quot;,
+    caption=&quot;Source: baseball-reference.com | Graphic by Kylee Sodomka&quot;, 
+    x=&quot;Games Played&quot;,
+    y=&quot;Total Hits&quot;
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size =8),
+    axis.text = element_text(size = 7),
+    axis.ticks = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  )</code></pre>
+<p><img src="/2021/12/03/did-the-trade-deadline-doom-the-chicago-cubs/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Considering Contreras and Wisdom played in more games than the OG core, we would hope that they had as many or more hits than them. However, Frank Schwindel looks to be very promising. He played in less games than anybody labeled, but he is matching Anthony Rizzo. That can give Cubs fans some hope.</p>
+<p>However, what do you need to win games? Runs. I am going to compare the cores and the number of RBIs they had in the 2021 season. It is a similar idea to the scatterplot comparison, but I will be using a cowplot to compare it with OG players and new players. I know Willson Contreras should be considered an OG player since he has been with the Cubs since 2016, but I see him as the new captain of the team and should be compared to the newer players.</p>
+<p>I will take the playerdata again and summarize the total RBIs for players and the “Type of Player” (TOP) they are. I will take this dataframe and create two more out of it for the new and og players. The six featured players will also have their own dataframes for highlighting and labeling purposes.</p>
+<pre class="r"><code>playerdata %&gt;%
+  select(Player, TOP, RBI) %&gt;%
+  group_by(Player) %&gt;%
+  summarize(
+    RBIs = sum(RBI),
+    TOP = (TOP)
+  ) -&gt; rbis</code></pre>
+<pre class="r"><code>new &lt;- rbis %&gt;%
+  filter(TOP == &quot;New&quot;)
+
+og &lt;- rbis %&gt;%
+  filter(TOP == &quot;OG&quot;) 
+
+AR &lt;- rbis %&gt;%
+  filter(Player == &quot;Anthony Rizzo&quot;)
+
+JB &lt;- rbis %&gt;%
+  filter(Player == &quot;Javier Baez&quot;)
+
+KB &lt;- rbis %&gt;%
+  filter(Player == &quot;Kris Bryant&quot;)
+
+FS &lt;- rbis %&gt;%
+  filter(Player == &quot;Frank Schwindel&quot;)
+
+PW &lt;- rbis %&gt;%
+  filter(Player == &quot;Patrick Wisdom&quot;)
+
+WC &lt;- rbis %&gt;%
+  filter(Player == &quot;Willson Contreras&quot;)</code></pre>
+<p>Once again, the OG core will be Cubbie blue, and the New core will be red. The og graph will be called the “ogrbibg” and the new graph will be “newrbibg” (bg meaning bar graph).</p>
+<pre class="r"><code>ggplot() +
+  geom_bar(data=og, aes(x=reorder(Player, RBIs), weight=RBIs)) +
+  geom_bar(data=JB, aes(x=reorder(Player, RBIs), weight=RBIs), fill=&quot;#0E3386&quot;) +
+  geom_bar(data=KB, aes(x=reorder(Player, RBIs), weight=RBIs), fill=&quot;#0E3386&quot;) +
+  geom_bar(data=AR, aes(x=reorder(Player, RBIs), weight=RBIs), fill=&quot;#0E3386&quot;) +
+labs(
+    title=&quot;The OG&#39;s were productive; the New Core proved to be too&quot;,
+    subtitle=&quot;The numbers are not far off between the two groups. Again, look at Schwindel...&quot;,
+    caption=&quot; &quot;, 
+    x=&quot; &quot;,
+    y=&quot;Total RBIs&quot;
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size =8),
+    axis.text = element_text(size = 7),
+    axis.ticks = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  ) +
+  coord_flip() +
+  geom_text(aes(x=6, y=68), label=&quot;65&quot;) +
+  geom_text(aes(x=5, y=54), label=&quot;51&quot;) +
+  geom_text(aes(x=4, y=43), label=&quot;40&quot;) -&gt; ogrbibg</code></pre>
+<pre class="r"><code>ggplot() +
+  geom_bar(data=new, aes(x=reorder(Player, -RBIs), weight=RBIs)) +
+  geom_bar(data=FS, aes(x=reorder(Player, -RBIs), weight=RBIs), fill=&quot;#CC3433&quot;) +
+  geom_bar(data=PW, aes(x=reorder(Player, -RBIs), weight=RBIs), fill=&quot;#CC3433&quot;) +
+  geom_bar(data=WC, aes(x=reorder(Player, -RBIs), weight=RBIs), fill=&quot;#CC3433&quot;) +
+labs(
+    title=&quot; &quot;,
+    subtitle=&quot; &quot;,
+    caption=&quot;Source: baseball-reference.com | Graphic by Kylee Sodomka&quot;, 
+    x=&quot; &quot;,
+    y=&quot;Total RBIs&quot;
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size =8),
+    axis.text = element_text(size = 7),
+    axis.ticks = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()
+  ) +
+  scale_y_reverse() +
+  coord_flip() +
+  geom_text(aes(x=1, y=64), label=&quot;61&quot;) +
+  geom_text(aes(x=2, y=60), label=&quot;57&quot;) +
+  geom_text(aes(x=3, y=43), label=&quot;40&quot;) -&gt; newrbibg</code></pre>
+<p>The two bar graphs will be side-by-side to make it easier to compare where they were RBI-wise compared to the other players.</p>
+<pre class="r"><code>plot_grid(ogrbibg, newrbibg)</code></pre>
+<p><img src="/2021/12/03/did-the-trade-deadline-doom-the-chicago-cubs/index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Again, the numbers are very similar between the two groups. You would hope that Contreras and Wisdom would have more RBIs since they were in more games than the OG core, but they were still higher standing compared to the other players. Frank Schwindel is a standout again, having as many RBIs as Rizzo, who played in 40 more games than him. That is very promising.</p>
+<p>Am I still heartbroken about my favorite players gone? Absolutely. However, I believe that the New core will surprise us and help lead this team to good things (as long as Ricketts start extending some of these players and stop signing minor league players).</p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+
