@@ -104,7 +104,7 @@ cubs &lt;- nlcentral %&gt;%
   scale_y_reverse() + 
   labs(
     title=&quot;Cubs started off okay, but didn&#39;t finish well&quot;,
-    subtitle=&quot;It was up and down before the trade deadline. They were going for anything but last place by the end.&quot;,
+    subtitle=&quot;It was up and down before the trade deadline, then it went dowhill from there&quot;,
     caption=&quot;Source: MLB.com | Graphic by Kylee Sodomka&quot;, 
     x=&quot;Week&quot;,
     y=&quot;Rankings&quot;
@@ -207,7 +207,7 @@ WC &lt;- rbis %&gt;%
   geom_bar(data=KB, aes(x=reorder(Player, RBIs), weight=RBIs), fill=&quot;#0E3386&quot;) +
   geom_bar(data=AR, aes(x=reorder(Player, RBIs), weight=RBIs), fill=&quot;#0E3386&quot;) +
 labs(
-    title=&quot;The OG&#39;s were productive; the New Core proved to be too&quot;,
+    title=&quot;Same story for both cores when it comes to RBIs&quot;,
     subtitle=&quot;The numbers are not far off between the two groups. Again, look at Schwindel...&quot;,
     caption=&quot; &quot;, 
     x=&quot; &quot;,
